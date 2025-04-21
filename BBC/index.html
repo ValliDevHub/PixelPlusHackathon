@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BBC - Replication with Enhanced News Personalization</title>
+    <style>
+      /* Root Variables */
+      :root {
+        /* Light Mode Colors */
+        --color-white: #ffffff;
+        --color-black: #000000;
+        --color-grey-light: #f8f8f8;
+        --color-grey-mid-light: #e6e6e6;
+        --color-grey-mid: #ddd;
+        --color-grey-dark: #666;
+        --color-red-bbc: #bb1919;
+        --color-red-bbc-hover: #d43025;
+        --background-color: #ffffff;
+        --text-color: #000000;
+        --header-bg: #ffffff;
+        --nav-bg: #ffffff;
+        --footer-bg: #f8f8f8;
+        --card-bg: #ffffff;
+         /* Typography */
+      --font-family-base: "BBC Reith Sans", "Reith Sans", Arial, Helvetica,
+        sans-serif;
+      --font-size-base: 16px;
+      --font-size-small: 12px;
+      --font-size-medium: 14px;
+      --font-size-large: 18px;
+      --font-size-h1: 32px;
+      --font-size-h2: 24px;
+      --font-size-h3: 18px;
+      --font-weight-bold: bold;
+
+      /* Spacing */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 12px;
+      --spacing-lg: 15px;
+      --spacing-xl: 20px;
+      --spacing-xxl: 30px;
+      --spacing-section-bottom: 40px;
+
+      /* Borders */
+      --border-width: 1px;
+      --border-color-light: var(--color-grey-mid-light);
+      --border-color-dark: #333;
+      --border-radius-sm: 4px;
+      --border-radius-md: 8px;
+      --border-radius-round: 50%;
+
+      /* Effects */
+      --box-shadow-default: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --transition-default: background-color 0.2s ease;
+      --transition-fast: all 0.2s;
+      --transform-translate-center: translateX(-50%);
+
+      /* Component Specific */
+      --header-height: 60px;
+      --logo-square-size: 36px;
+      --nav-item-padding-vertical: 5px;
+      --nav-item-border-bottom-width: 3px;
+      --widget-width: 300px;
+      --widget-header-padding: 12px var(--spacing-lg);
+      --widget-content-padding: var(--spacing-lg);
+      --tag-border-radius: 20px;
+      --tag-padding: 5px 12px;
+      --personalize-button-size: 50px;
+      }
+
+      /* Dark Mode Colors */
+      .dark-mode {
+        --color-white: #121212;
+        --color-black: #e0e0e0;
+        --color-grey-light: #1e1e1e;
+        --color-grey-mid-light: #2d2d2d;
+        --color-grey-mid: #3d3d3d;
+        --color-grey-dark: #a0a0a0;
+        --color-red-bbc: #d43025;
+        --color-red-bbc-hover: #e74c3c;
+        --background-color: #121212;
+        --text-color: #e0e0e0;
+        --header-bg: #1e1e1e;
+        --nav-bg: #1e1e1e;
+        --footer-bg: #1e1e1e;
+        --card-bg: #2d2d2d;
+      }
+
+     
+
+      /* Reset and Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: var(--font-family-base);
+      }
+
+      body {
+        font-family: var(--font-family-base);
+        color: var(--text-color);
+        background-color: var(--background-color);
+        line-height: 1.4;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      /* Header Styles */
+      .header {
+        background-color: var(--header-bg);
+        color: var(--text-color);
+        padding: var(--spacing-md) var(--spacing-lg);
+        display: flex;
+        align-items: center;
+        position: relative;
+        border-bottom: var(--border-width) var(--border-color-dark);
+      }
+
+      .menu-toggle {
+        font-size: 24px;
+        font-weight: var(--font-weight-bold);
+        margin-right: var(--spacing-xl);
+        cursor: pointer;
+      }
+
+      .logo {
+        display: flex;
+        gap: var(--spacing-xs);
+        position: absolute;
+        left: 50%;
+        transform: var(--transform-translate-center);
+      }
+
+      .logo div {
+        background-color: var(--color-black);
+        color: var(--color-white);
+        width: var(--logo-square-size);
+        height: var(--logo-square-size);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        font-weight: var(--font-weight-bold);
+      }
+
+      .register {
+        margin-left: auto;
+        font-size: var(--font-size-small);
+        cursor: pointer;
+        white-space: nowrap;
+        flex-direction: row;
+        padding: 10px var(--spacing-md);
+        text-transform: uppercase;
+        cursor: pointer;
+        background-color: var(--color-black);
+        color: var(--color-white);
+        margin-right: var(--spacing-sm);
+      }
+
+      .register:hover {
+        background-color: var(--color-grey-dark);
+      }
+
+      .signup {
+        font-size: var(--font-size-small);
+        cursor: pointer;
+        white-space: nowrap;
+        flex-direction: row;
+        padding: 10px var(--spacing-md);
+        text-transform: uppercase;
+        cursor: pointer;
+        color: var(--color-black);
+      }
+      .signup:hover {
+        background-color: var(--color-black);
+        color: var(--color-white);
+      }
+
+      /* Navigation */
+      .nav {
+        background-color: var(--nav-bg);
+        border-bottom: var(--border-width) var(--border-color-light);
+        padding: var(--spacing-md) var(--spacing-lg);
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        justify-content: center;
+      }
+
+      .nav-item {
+        color: var(--text-color);
+        border-bottom-color: var(--color-black);
+        margin-right: var(--spacing-xl);
+        font-size: var(--font-size-medium);
+        font-weight: var(--font-weight-bold);
+        text-decoration: none;
+        padding: var(--nav-item-padding-vertical) 0;
+        border-bottom: var(--nav-item-border-bottom-width) solid transparent;
+        transition: var(--transition-default);
+      }
+
+      .nav-item:hover {
+        background-color: var(--color-grey-mid-light);
+      }
+
+      .nav-item.active {
+        color: var(--text-color);
+        border-bottom-color: var(--color-black);
+        background-color: var(--color-grey-mid-light);
+      }
+      .home:hover {
+        border-bottom: 0px #333;
+        background-color: var(--color-grey-mid-light);
+      }
+
+      /* Main Content */
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: var(--spacing-xl) var(--spacing-lg);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr;;
+        gap: var(--spacing-xl);
+        margin-bottom: var(--spacing-xxl);
+      }
+
+      .main-news {
+        border-right: var(--border-width) var(--border-color-light);
+        padding-right: var(--spacing-xl);
+      }
+
+      .main-news img {
+        width: 100%;
+        height: auto;
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .main-news h1 {
+        font-size: var(--font-size-h1);
+        margin-bottom: var(--spacing-lg);
+        line-height: 1.2;
+      }
+
+      .main-news p {
+        font-size: var(--font-size-base);
+        margin-bottom: var(--spacing-lg);
+        color: var(--color-grey-dark);
+      }
+
+      .main-news .meta {
+        color: var(--color-grey-dark);
+        font-size: var(--font-size-medium);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .sidebar-news {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar-item {
+        padding: var(--spacing-lg) 0;
+        border-bottom: var(--border-width) var(--border-color-light);
+      }
+
+      .sidebar-item:last-child {
+        border-bottom: none;
+      }
+
+      .sidebar-item h3 {
+        font-size: 14px;
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .sidebar-item .meta {
+        color: var(--color-grey-dark);
+        font-size: var(--font-size-small);
+      }
+
+      /* News Sections */
+      .section {
+        margin-bottom: var(--spacing-section-bottom);
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-sm);
+        border-bottom: var(--border-width) var(--border-color-light);
+      }
+
+      .section-title {
+        font-size: var(--font-size-h2);
+        color: var(--color-red-bbc);
+      }
+
+      .see-all {
+        color: var(--color-grey-dark);
+        font-size: var(--font-size-medium);
+        text-decoration: none;
+      }
+
+      .news-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--spacing-xl);
+      }
+
+      .news-card {
+        display: flex;
+        flex-direction: column;
+        background-color: var(--card-bg);
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius-sm);
+      }
+
+      .news-card img {
+        width: 100%;
+        height: auto;
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .news-card h3 {
+        font-size: var(--font-size-base);
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .news-card .meta {
+        color: var(--color-grey-dark);
+        font-size: var(--font-size-small);
+      }
+      .meta{
+        color: #666;
+        font-size: 13px;
+        border-bottom: 1px solid rgb(230, 232, 234);
+      }
+
+      /* Footer */
+      .footer {
+        background-color: var(--footer-bg);
+        padding: var(--spacing-xxl) var(--spacing-lg);
+        border-top: var(--border-width) var(--border-color-light);
+      }
+
+      .footer-nav {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: var(--spacing-xl);
+      }
+
+      .footer-nav a {
+        color: var(--color-grey-dark);
+        text-decoration: none;
+        margin: 0 var(--spacing-xl) var(--spacing-sm);
+        font-size: var(--font-size-medium);
+      }
+
+      .copyright {
+        text-align: center;
+        color: var(--color-grey-dark);
+        font-size: var(--font-size-small);
+      }
+
+      /* NEW COMPONENT: News Personalization Widget */
+      .personalization-widget {
+        position: fixed;
+        bottom: var(--spacing-xl);
+        right: var(--spacing-xl);
+        background-color: var(--card-bg);
+        border: var(--border-width) var(--border-color-light);
+        border-radius: var(--border-radius-md);
+        box-shadow: var(--box-shadow-default);
+        width: var(--widget-width);
+        z-index: 1000;
+        transform: translateY(120%);
+        transition: transform 0.3s ease;
+      }
+
+      .personalization-widget.visible {
+        transform: translateY(0);
+      }
+
+      .widget-header {
+        background-color: var(--color-red-bbc);
+        color: var(--color-white);
+        padding: var(--widget-header-padding);
+        border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .widget-header h3 {
+        font-size: var(--font-size-large);
+      }
+
+      .close-widget {
+        background: none;
+        border: none;
+        color: var(--color-white);
+        font-size: 18px;
+        cursor: pointer;
+      }
+
+      .widget-content {
+        padding: var(--widget-content-padding);
+      }
+
+      .widget-content p {
+        margin-bottom: var(--spacing-lg);
+        font-size: var(--font-size-medium);
+      }
+
+      .interest-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .interest-tag {
+        background-color: var(--color-grey-mid-light);
+        border: var(--border-width) var(--color-grey-mid);
+        border-radius: var(--tag-border-radius);
+        padding: var(--tag-padding);
+        font-size: var(--font-size-small);
+        cursor: pointer;
+        transition: var(--transition-fast);
+      }
+
+      .interest-tag.selected {
+        background-color: var(--color-red-bbc);
+        color: var(--color-white);
+        border-color: var(--color-red-bbc);
+      }
+
+      .save-preferences {
+        background-color: var(--color-red-bbc);
+        color: var(--color-white);
+        border: none;
+        padding: var(--spacing-sm) var(--spacing-xl);
+        border-radius: var(--border-radius-sm);
+        cursor: pointer;
+        font-size: var(--font-size-medium);
+        width: 100%;
+      }
+
+      .personalize-button {
+        position: fixed;
+        bottom: var(--spacing-xl);
+        right: var(--spacing-xl);
+        background-color: var(--color-red-bbc);
+        color: var(--color-white);
+        border: none;
+        width: var(--personalize-button-size);
+        height: var(--personalize-button-size);
+        border-radius: var(--border-radius-round);
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: var(--box-shadow-default);
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Toggle Switch Styles */
+      .toggle-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-right: var(--spacing-md);
+      }
+
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+      }
+
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 34px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: #4CAF50;
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(26px);
+      }
+
+      .menu-toggle {
+        display: flex;
+        align-items: center;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .menu-toggle svg {
+        margin-right: 4px;
+        margin-left: 0px;
+      }
+
+      .menu-toggle .equal-icon,
+      .menu-toggle .search-icon {
+        margin-right: 8px;
+      }
+      .main-left-heading{
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-grey-dark);
+      }
+      .main-left-subheading{
+        font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-grey-dark);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="menu-toggle">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="lucide lucide-menu"
+        >
+          <line x1="4" x2="20" y1="12" y2="12"></line>
+          <line x1="4" x2="20" y1="6" y2="6"></line>
+          <line x1="4" x2="20" y1="18" y2="18"></line>
+        </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </div>
+      <div class="logo">
+        <div>B</div>
+        <div>B</div>
+        <div>C</div>
+      </div>
+      <div class="toggle-container">
+        <label>Dark Mode</label>
+        <label class="switch">
+          <input type="checkbox" id="darkModeToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="register">Register</div>
+      <div class="signup signup-hover">Sign In</div>
+    </header>
+
+    <nav class="nav">
+      <a href="#" class="nav-item active home">Home</a>
+      <a href="#" class="nav-item">News</a>
+      <a href="#" class="nav-item">Sport</a>
+      <a href="#" class="nav-item">Business</a>
+      <a href="#" class="nav-item">Innovation</a>
+      <a href="#" class="nav-item">Culture</a>
+      <a href="#" class="nav-item">Arts</a>
+      <a href="#" class="nav-item">Travel</a>
+      <a href="#" class="nav-item">Video</a>
+      <a href="#" class="nav-item">Weather</a>
+      <a href="#" class="nav-item">Live</a>
+    </nav>
+
+    <div class="container">
+      <div class="hero">
+            <!-- Left Column -->
+            <div class="left-news"> 
+                <div class="main-news main-left-headin main-left-subheading">
+                    <img src="./img/2.jpg" alt="UK inflation image" />
+                    <h3>Thousands join anti-Trump protests across US</h3>
+                    <p>Demonstrations, taking place on the 250th anniversary of the start of the American Revolutionary War, addressed a range of grievances.</p>
+                    <div class="meta">6hour ago | US & Canada</div>
+                    <img src="./img/3.jpg" alt="UK inflation image" />
+                    <h3>  Inside Elon Musk's government-subsidised Texas headquarters</h3>
+                    <p>The tycoon and Donald Trump advisor has moved his businesses from California to a mostly rural central Texas county. What do the neighbours think?</p>   
+                    <div class="meta">4hour ago | US & Canada</div>
+                </div>
+            </div>
+            <!-- main Column -->
+        <div class="main-news">
+            <img src="./img/1.jpg" alt="UK inflation image" />
+            <h3>Zelensky says Russian attacks ongoing despite Putin announcing 'Easter truce'</h3>
+            <p>The Ukrainian president accused Moscow of breaking the truce, but said Ukraine would follow it if Russian attacks ceased.</p>   
+            <div class="meta">4 hours ago | Europe </div>
+        </div>
+        <div class="sidebar-news">
+          <div class="sidebar-item">
+            <h3>UK inflation falls to lowest level in two years</h3>
+            <div class="meta">1 hour ago | Business</div>
+          </div>
+          <div class="sidebar-item">
+            <h3>New study links screen time to teenage anxiety</h3>
+            <div class="meta">4 hours ago | Health</div>
+          </div>
+          <div class="sidebar-item">
+            <h3>
+              Football club faces investigation over financial irregularities
+            </h3>
+            <div class="meta">6 hours ago | Sport</div>
+          </div>
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Top Stories</h2>
+          <a href="#" class="see-all">See All</a>
+        </div>
+        <div class="news-grid">
+          <div class="news-card">
+           
+            <h3>Tech giant announces groundbreaking AI model</h3>
+            <div class="meta">30 minutes ago | Technology</div>
+          </div>
+          <div class="news-card">
+            
+            <h3>Local elections see surprising results</h3>
+            <div class="meta">1 hour ago | Politics</div>
+          </div>
+          <div class="news-card">
+            <h3>Scientists discover new species of deep-sea fish</h3>
+            <div class="meta">2 hours ago | Science</div>
+          </div>
+          <div class="news-card">
+           
+            <h3>Author wins prestigious literary award</h3>
+            <div class="meta">3 hours ago | Culture</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">Business</h2>
+          <a href="#" class="see-all">More Business</a>
+        </div>
+        <div class="news-grid">
+          <div class="news-card">
+           
+            <h3>Stock markets react to economic data</h3>
+            <div class="meta">45 minutes ago | Finance</div>
+          </div>
+          <div class="news-card">
+           
+            <h3>New trade agreement signed between nations</h3>
+            <div class="meta">1.5 hours ago | Economy</div>
+          </div>
+          <div class="news-card">
+           
+            <h3>Oil prices surge following supply concerns</h3>
+            <div class="meta">2.5 hours ago | Markets</div>
+          </div>
+          <div class="news-card">
+           
+            <h3>Start-up secures major funding round</h3>
+            <div class="meta">3.5 hours ago | Technology</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="footer">
+      <nav class="footer-nav">
+        <a href="#">Home</a>
+        <a href="#">News</a>
+        <a href="#">Sport</a>
+        <a href="#">Business</a>
+        <a href="#">Innovation</a>
+        <a href="#">Culture</a>
+        <a href="#">Arts</a>
+        <a href="#">Travel</a>
+        <a href="#">Video</a>
+        <a href="#">Weather</a>
+        <a href="#">Terms of Use</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Cookies</a>
+        <a href="#">Accessibility Help</a>
+        <a href="#">Contact Us</a>
+      </nav>
+      <p class="copyright">
+        &copy; 2023 BBC. The BBC is not responsible for the content of external
+        sites. <a href="#">Read about our approach to external linking.</a>
+      </p>
+    </footer>
+
+    <button class="personalize-button" id="personalizeButton">+</button>
+
+    <div class="personalization-widget" id="personalizationWidget">
+      <div class="widget-header">
+        <h3>Personalize Your News</h3>
+        <button class="close-widget" id="closeWidget">×</button>
+      </div>
+      <div class="widget-content">
+        <p>
+          Help us show you the news that matters most to you. Select the topics
+          you're interested in:
+        </p>
+        <div class="interest-tags">
+          <span class="interest-tag">World</span>
+          <span class="interest-tag">Politics</span>
+          <span class="interest-tag">Technology</span>
+          <span class="interest-tag">Business</span>
+          <span class="interest-tag">Science</span>
+          <span class="interest-tag">Health</span>
+          <span class="interest-tag">Sport</span>
+          <span class="interest-tag">Football</span>
+          <span class="interest-tag">Cricket</span>
+          <span class="interest-tag">Culture</span>
+          <span class="interest-tag">Arts</span>
+          <span class="interest-tag">Travel</span>
+          <span class="interest-tag">Environment</span>
+        </div>
+        <button class="save-preferences" id="savePreferences">
+          Save Preferences
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Dark Mode Toggle
+      const darkToggle = document.getElementById('darkModeToggle');
+      const body = document.body;
+
+      // Check for saved user preference or use system preference
+      if (localStorage.getItem('darkMode') === 'enabled' || 
+          (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        body.classList.add('dark-mode');
+        darkToggle.checked = true;
+      }
+
+      darkToggle.addEventListener('change', () => {
+        if (darkToggle.checked) {
+          body.classList.add('dark-mode');
+          localStorage.setItem('darkMode', 'enabled');
+        } else {
+          body.classList.remove('dark-mode');
+          localStorage.setItem('darkMode', 'disabled');
+        }
+      });
+
+      // Personalization Widget
+      const personalizeButton = document.getElementById("personalizeButton");
+      const personalizationWidget = document.getElementById("personalizationWidget");
+      const closeWidgetButton = document.getElementById("closeWidget");
+      const interestTags = document.querySelectorAll(".interest-tag");
+      const savePreferencesButton = document.getElementById("savePreferences");
+
+      personalizeButton.addEventListener("click", () => {
+        personalizationWidget.classList.add("visible");
+      });
+
+      closeWidgetButton.addEventListener("click", () => {
+        personalizationWidget.classList.remove("visible");
+      });
+
+      interestTags.forEach((tag) => {
+        tag.addEventListener("click", () => {
+          tag.classList.toggle("selected");
+        });
+      });
+
+      savePreferencesButton.addEventListener("click", () => {
+        const selectedInterests = Array.from(interestTags)
+          .filter((tag) => tag.classList.contains("selected"))
+          .map((tag) => tag.textContent);
+
+        console.log("Selected Interests:", selectedInterests);
+        // In a real application, you would send these preferences to a server
+        // and update the user's news feed accordingly.
+
+        personalizationWidget.classList.remove("visible");
+        alert("Your preferences have been saved (this is a simulation).");
+      });
+    </script>
+  </body>
+</html>
